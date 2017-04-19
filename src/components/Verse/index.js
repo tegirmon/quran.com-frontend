@@ -26,19 +26,21 @@ const Share = Loadable({
 class Verse extends Component {
   // TODO: Should this belong here?
   componentDidMount() {
-    const { verse, audio } = this.props;
+    const { verse, audio, isSearched } = this.props;
 
-    this.props.loadAudio({
-      chapterId: verse.chapterId,
-      verseId: verse.id,
-      verseKey: verse.verseKey,
-      audio
-    });
+    if (!isSearched) {
+      this.props.loadAudio({
+        chapterId: verse.chapterId,
+        verseId: verse.id,
+        verseKey: verse.verseKey,
+        audio
+      });
+    }
   }
 
   // TODO: Should this belong here?
   componentWillReceiveProps(nextProps) {
-    if (this.props.audio !== nextProps.audio) {
+    if (!this.props.isSearched && this.props.audio !== nextProps.audio) {
       const { verse, audio } = nextProps;
 
       this.props.loadAudio({
@@ -131,10 +133,10 @@ class Verse extends Component {
   }
 
   renderText() {
-    const { verse, tooltip, currentVerse, isPlaying, audioActions, isSearched, userAgent } = this.props; // eslint-disable-line max-len
+    const { verse, tooltip, currentVerse, isPlaying, audioActions, isSearched } = this.props; // eslint-disable-line max-len
     // NOTE: Some 'word's are glyphs (jeem). Not words and should not be clicked for audio
     let wordAudioPosition = -1;
-    const renderText = userAgent.isChrome || userAgent.isOpera || userAgent.isBot;
+    const renderText = false; // userAgent.isBot;
 
     const text = verse.words.map(word => ( // eslint-disable-line
       <Word
